@@ -145,25 +145,25 @@ class Genshin(commands.Cog):
             value=f'```css\n{data["spiral_abyss"]}```'
         ).add_field(
             name='Anemoculi',
-            value=f'```css\n{data["anemoculi"]}```'
+            value=f'```css\n{data["anemoculi"]}/65```'
         ).add_field(
             name='Geoculi',
-            value=f'```css\n{data["geoculi"]}```'
+            value=f'```css\n{data["geoculi"]}/131```'
         ).add_field(
             name='Common Chests',
-            value=f'```css\n{data["common_chests"]}```'
+            value=f'```css\n{data["common_chests"]}/825```'
         ).add_field(
             name='Exquisite Chests',
-            value=f'```css\n{data["exquisite_chests"]}```'
+            value=f'```css\n{data["exquisite_chests"]}/620```'
         ).add_field(
             name='Precious Chests',
-            value=f'```css\n{data["precious_chests"]}```'
+            value=f'```css\n{data["precious_chests"]}/138```'
         ).add_field(
             name='Luxurious Chests',
-            value=f'```css\n{data["luxurious_chests"]}```'
+            value=f'```css\n{data["luxurious_chests"]}/41```'
         ).add_field(
             name='Unlocked Waypoints',
-            value=f'```css\n{data["unlocked_waypoints"]}```'
+            value=f'```css\n{data["unlocked_waypoints"]}/83```'
         ).add_field(
             name='Unlocked Domains',
             value=f'```css\n{data["unlocked_domains"]}```'
