@@ -11,7 +11,7 @@ class Genshin(commands.Cog):
     async def get_gid_from_cid(self, cid:int):
         gid = await self.bot.loop.run_in_executor(None, gs.get_uid_from_community, cid)
         if gid is None:
-            raise AccountNotPublic()
+            raise AccountNotPublic('UID is private. Please set it to public.')
         return gid
 
     async def input_data_to_db(self, uid:int, cid:int, gid:int, authcookie:str):
@@ -34,6 +34,13 @@ class Genshin(commands.Cog):
         loots = gs.get_daily_rewards()[0]
         streak = gs.get_daily_reward_info()['total_sign_day']
         return loots['name'], loots['cnt'], loots['img'], streak
+
+    async def fetch_user_data(self, uid):
+        return self.userdata.find_one(
+            {
+                'uid':uid
+            }
+        )
 
     @not_logged_in()
     @commands.command(name='setup', aliases=['register'])
@@ -76,7 +83,7 @@ class Genshin(commands.Cog):
             title='How to use PAIMON Bot/How to integrate your Genshin Account to PAIMON Bot'
         ).add_field(
             name='**Step #1:**',
-            value='Go to the [hoyolab webiste](https://hoyolab.com/genshin).',
+            value='Go to the [hoyolab website](https://hoyolab.com/genshin).',
             inline=False
         ).add_field(
             name='**Step #2:**',
@@ -107,6 +114,62 @@ class Genshin(commands.Cog):
         )
 
         await ctx.send(embed=e)
+
+    @is_logged_in()
+    @commands.command(name='profile', aliases=['pf'])
+    async def _profile(self, ctx, member:discord.Member=None):
+        member = ctx.author if member is None else member
+        await self.set_current_logged_in_user(ctx.author.id)
+        user = await self.fetch_user_data(member.id)
+        if user is None:
+            raise NotLoggedIn(f'It seems that the user you\'re trying to look up hasn\'t integrated their hoyolab account to PAIMON. Please run the `{ctx.prefix}howto` command for more information.')
+        data = gs.get_user_info(user['gid'])['stats']
+        nickname = gs.get_record_card(user['cid'])['nickname']
+
+        e = discord.Embed(
+            color=discord.Color(0x2f3136)
+        ).set_author(
+            name=nickname,
+            icon_url=member.avatar_url_as(static_format='png')
+        ).add_field(
+            name='Achievements',
+            value=f'```css\n{data["achievements"]}```'
+        ).add_field(
+            name='Active Days',
+            value=f'```css\n{data["active_days"]}```'
+        ).add_field(
+            name='Characters',
+            value=f'```css\n{data["characters"]}```'
+        ).add_field(
+            name='Spiral Abyss',
+            value=f'```css\n{data["spiral_abyss"]}```'
+        ).add_field(
+            name='Anemoculi',
+            value=f'```css\n{data["anemoculi"]}```'
+        ).add_field(
+            name='Geoculi',
+            value=f'```css\n{data["geoculi"]}```'
+        ).add_field(
+            name='Common Chests',
+            value=f'```css\n{data["common_chests"]}```'
+        ).add_field(
+            name='Exquisite Chests',
+            value=f'```css\n{data["exquisite_chests"]}```'
+        ).add_field(
+            name='Precious Chests',
+            value=f'```css\n{data["precious_chests"]}```'
+        ).add_field(
+            name='Luxurious Chests',
+            value=f'```css\n{data["luxurious_chests"]}```'
+        ).add_field(
+            name='Unlocked Waypoints',
+            value=f'```css\n{data["unlocked_waypoints"]}```'
+        ).add_field(
+            name='Unlocked Domains',
+            value=f'```css\n{data["unlocked_domains"]}```'
+        )
+        await ctx.send(embed=e)
+
         
 def setup(bot):
     bot.add_cog(Genshin(bot))
