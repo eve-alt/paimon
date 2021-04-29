@@ -151,16 +151,16 @@ class Genshin(commands.Cog):
             value=f'```css\n{data["geoculi"]}/131```'
         ).add_field(
             name='Common Chests',
-            value=f'```css\n{data["common_chests"]}/825```'
+            value=f'```css\n{data["common_chests"]}```'
         ).add_field(
             name='Exquisite Chests',
-            value=f'```css\n{data["exquisite_chests"]}/620```'
+            value=f'```css\n{data["exquisite_chests"]}```'
         ).add_field(
             name='Precious Chests',
-            value=f'```css\n{data["precious_chests"]}/138```'
+            value=f'```css\n{data["precious_chests"]}```'
         ).add_field(
             name='Luxurious Chests',
-            value=f'```css\n{data["luxurious_chests"]}/41```'
+            value=f'```css\n{data["luxurious_chests"]}```'
         ).add_field(
             name='Unlocked Waypoints',
             value=f'```css\n{data["unlocked_waypoints"]}/83```'
