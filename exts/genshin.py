@@ -1,12 +1,22 @@
 import discord
 from discord.ext import commands
 from .utils.checks_err import *
+from disputils import BotEmbedPaginator
 import genshinstats as gs
 
 class Genshin(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.userdata = self.bot.db['userdata']
+        self.element_icons = {
+            "Pyro":"<:pyro:838609135644966932>",
+            "Hydro":"<:hydro:838609135767126056>",
+            "Electro":"<:electro:838609135104819251>",
+            "Geo":"<:geo:838609135703425074>",
+            "Anemo":"<:anemo:838609135322005515>",
+            "Cryo":"<:cryo:838609135405629471>",
+            "Dendro":"<:dendro:838609135330263071>"
+        }
 
     async def get_gid_from_cid(self, cid:int):
         gid = await self.bot.loop.run_in_executor(None, gs.get_uid_from_community, cid)
@@ -23,6 +33,11 @@ class Genshin(commands.Cog):
                 'authcookie':authcookie
             }
         )
+
+    async def get_character_thumbnails(self, uid):
+        user = await self.fetch_user_data(uid)
+        await self.set_current_logged_in_user(uid)
+        return [i['icon'] for i in gs.get_user_info(user['gid'])['characters']]
 
     async def set_current_logged_in_user(self, uid):
         user = self.userdata.find_one({'uid':uid})
@@ -129,8 +144,10 @@ class Genshin(commands.Cog):
         e = discord.Embed(
             color=discord.Color(0x2f3136)
         ).set_author(
-            name=nickname,
-            icon_url=member.avatar_url_as(static_format='png')
+            name='{nickname}\'s Battle Chronicle Summary',
+            icon_url='https://media.discordapp.net/attachments/694172476934193264/838556891558576188/chrome_Twsaf61jXh.png'
+        ).set_thumbnail(
+            url=member.avatar_url_as(static_format='png')
         ).add_field(
             name='Achievements',
             value=f'```css\n{data["achievements"]}```'
@@ -169,6 +186,37 @@ class Genshin(commands.Cog):
             value=f'```css\n{data["unlocked_domains"]}```'
         )
         await ctx.send(embed=e)
+
+    @is_logged_in()
+    @commands.command(name='characters')
+    async def _characters(self, ctx, member:discord.Member=None):
+        member = ctx.author if member is None else member
+        await self.set_current_logged_in_user(ctx.author.id)
+        user = await self.fetch_user_data(member.id)
+        if user is None:
+            raise NotLoggedIn(f'It seems that the user you\'re trying to look up hasn\'t integrated their hoyolab account to PAIMON. Please run the `{ctx.prefix}howto` command for more information.')
+        icons = self.get_character_thumbnails(member.id)
+        data = gs.get_all_characters(user['gid'])
+        nickname = gs.get_record_card(user['cid'])['nickname']
+        embeds = [
+            discord.Embed(
+                color=discord.Color(0x2f3136),
+                description=f'**Rarity:** {"⭐"*page["rarity"]}\
+                    \n**Element:** {self.element_icons[page["element"]]}\
+                    \n**Level:** `{page["level"]}`\
+                    \n**Friendship Lv.:** `{page["friendship"]}`\
+                    \n**Constellation Lv.:** `{page["constellation"]}`'
+            ).set_author(
+                name=f'{nickname}\'s {page["name"]}'
+            ).set_thumbnail(
+                url=icons[i]
+            ).set_image(
+                url=page["icon"]
+            ) for i, page in enumerate(data)
+        ]
+        paginate = BotEmbedPaginator(ctx, embeds)
+        await paginator.run()
+
 
         
 def setup(bot):
