@@ -195,7 +195,7 @@ class Genshin(commands.Cog):
         user = await self.fetch_user_data(member.id)
         if user is None:
             raise NotLoggedIn(f'It seems that the user you\'re trying to look up hasn\'t integrated their hoyolab account to PAIMON. Please run the `{ctx.prefix}howto` command for more information.')
-        icons = self.get_character_thumbnails(member.id)
+        icons = await self.get_character_thumbnails(member.id)
         data = gs.get_all_characters(user['gid'])
         nickname = gs.get_record_card(user['cid'])['nickname']
         embeds = [
