@@ -214,7 +214,7 @@ class Genshin(commands.Cog):
                 url=page["icon"]
             ) for i, page in enumerate(data)
         ]
-        paginate = BotEmbedPaginator(ctx, embeds)
+        paginator = BotEmbedPaginator(ctx, embeds)
         await paginator.run()
 
 
