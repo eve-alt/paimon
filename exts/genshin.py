@@ -125,7 +125,7 @@ class Genshin(commands.Cog):
         ).set_thumbnail(
             url='https://cdn.discordapp.com/attachments/694172476934193264/836005833048850462/d53edec176d2027dfe6e8dc35599d972_4325071795431613034.png'
         ).set_footer(
-            text='If you still have any concerns, feel free to dm me anytime. -eve-alt#8626'
+            text='If you still have any concerns, feel free to dm me anytime. -egoiste#6575'
         )
 
         await ctx.send(embed=e)
@@ -144,7 +144,8 @@ class Genshin(commands.Cog):
         e = discord.Embed(
             color=discord.Color(0x2f3136)
         ).set_author(
-            name='{nickname}\'s Battle Chronicle Summary',
+            name=f'{nickname}\'s Battle Chronicle Summary',
+            
             icon_url='https://media.discordapp.net/attachments/694172476934193264/838556891558576188/chrome_Twsaf61jXh.png'
         ).set_thumbnail(
             url=member.avatar_url_as(static_format='png')
@@ -198,6 +199,7 @@ class Genshin(commands.Cog):
         icons = await self.get_character_thumbnails(member.id)
         data = gs.get_all_characters(user['gid'])
         nickname = gs.get_record_card(user['cid'])['nickname']
+        artifacts = [i if ]
         embeds = [
             discord.Embed(
                 color=discord.Color(0x2f3136),
@@ -207,11 +209,15 @@ class Genshin(commands.Cog):
                     \n**Friendship Lv.:** `{page["friendship"]}`\
                     \n**Constellation Lv.:** `{page["constellation"]}`'
             ).set_author(
-                name=f'{nickname}\'s {page["name"]}'
+                name=f'{nickname}\'s {page["name"]}',
+                icon_url=member.avatar_url_as(static_format='png')
             ).set_thumbnail(
                 url=icons[i]
             ).set_image(
                 url=page["icon"]
+            ).add_field(
+                name='',
+                value=''
             ) for i, page in enumerate(data)
         ]
         paginator = BotEmbedPaginator(ctx, embeds)
