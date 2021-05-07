@@ -145,7 +145,7 @@ class Genshin(commands.Cog):
             color=discord.Color(0x2f3136)
         ).set_author(
             name=f'{nickname}\'s Battle Chronicle Summary',
-            
+
             icon_url='https://media.discordapp.net/attachments/694172476934193264/838556891558576188/chrome_Twsaf61jXh.png'
         ).set_thumbnail(
             url=member.avatar_url_as(static_format='png')
@@ -199,7 +199,7 @@ class Genshin(commands.Cog):
         icons = await self.get_character_thumbnails(member.id)
         data = gs.get_all_characters(user['gid'])
         nickname = gs.get_record_card(user['cid'])['nickname']
-        artifacts = [i if ]
+        #artifacts = [i if ]
         embeds = [
             discord.Embed(
                 color=discord.Color(0x2f3136),
